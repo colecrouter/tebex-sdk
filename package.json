@@ -1,0 +1,26 @@
+{
+  "name": "tebex-sdk",
+  "version": "1.0.0",
+  "description": "",
+  "main": "build/index.js",
+  "type": "module",
+  "scripts": {
+    "lint": "biome lint ./src && tsc --noEmit",
+    "lint:fix": "biome lint ./src --fix && tsc --noEmit",
+    "format": "biome check ./src",
+    "format:fix": "biome check ./src --fix",
+    "test": "node --import tsx --test ./src/**/*.spec.ts",
+    "build": "tsc"
+  },
+  "author": "Cole Crouter",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^22.10.10",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  },
+  "engineStrict": true,
+  "engines": {
+    "node": ">=21.0.0"
+  }
+}
