@@ -1,26 +1,31 @@
 declare namespace Tebex {
 	interface PriceDetails {
-		subtotal: number;
+		/** (float) Example: `1.27` */
+		subTotal: number;
+		/** (float) Example: `1.4` */
+		fullPrice: number;
+		discounts: Discount[];
+		/** (float) Example: `0.13` */
 		tax: number;
+		/** (float) Example: `1.4` */
 		total: number;
-		currency: string;
+		surcharges?: unknown[];
+		balance?: number;
+		sales?: Sale[];
+		giftcards?: GiftCard[];
+		roundUp?: boolean | null;
 	}
 
-	interface Discount {
-		type: "percentage" | "amount";
-		value: number;
-		description: string;
-	}
+	/** Unfortunately this object is not documented anywhere in the Tebex API documentation. If you know more, please open a PR! */
+	// biome-ignore lint/suspicious/noEmptyInterface: <explanation>
+	interface Discount {}
 
 	interface Coupon {
-		code: string;
-		discount: Discount;
-		expirationDate: string;
+		couponCode: string;
 	}
 
 	interface GiftCard {
 		cardNumber: string;
-		balance: number;
 	}
 
 	interface Address {
@@ -29,6 +34,12 @@ declare namespace Tebex {
 		state: string;
 		postalCode: string;
 		country: string;
+		name?: string;
+		first_name?: string;
+		last_name?: string;
+		email?: string;
+		state_id?: string | null;
+		address?: string;
 	}
 
 	interface BasketRow {
@@ -43,6 +54,7 @@ declare namespace Tebex {
 		self: string;
 		checkout: string;
 		cancel: string;
+		payment?: string;
 	}
 
 	interface RevenueShare {
