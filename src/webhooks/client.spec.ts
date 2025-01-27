@@ -1,5 +1,5 @@
-import { test, beforeEach } from "node:test";
 import assert from "node:assert";
+import { beforeEach, test } from "node:test";
 import { WebhookHandler } from "./client";
 
 let webhookHandler: WebhookHandler;
@@ -29,22 +29,25 @@ test("should process a valid webhook request", async () => {
 	// Mock verifySignature to return true
 	webhookHandler.verifySignature = async () => true;
 
-	const result = await webhookHandler.handleRequest(
-		validRawBody,
-		mockHeaders,
-		validIp1,
-	);
+	const request = new Request("https://example.com/webhook", {
+		method: "POST",
+		headers: mockHeaders,
+		body: validRawBody,
+	});
+
+	const result = await webhookHandler.handleRequest(request, validIp1);
 
 	assert.deepStrictEqual(result, JSON.parse(validRawBody));
 });
 
 test("should throw an error for invalid IP address", async () => {
+	const request = new Request("https://example.com/webhook", {
+		method: "POST",
+		headers: mockHeaders,
+		body: validRawBody,
+	});
 	try {
-		await webhookHandler.handleRequest(
-			validRawBody,
-			mockHeaders,
-			invalidIp,
-		);
+		await webhookHandler.handleRequest(request, invalidIp);
 		assert.fail("Expected error was not thrown");
 	} catch (error) {
 		if (!(error instanceof Error)) throw error;
@@ -54,8 +57,13 @@ test("should throw an error for invalid IP address", async () => {
 
 test("should throw an error for missing signature", async () => {
 	const headers = new Headers();
+	const request = new Request("https://example.com/webhook", {
+		method: "POST",
+		headers,
+		body: validRawBody,
+	});
 	try {
-		await webhookHandler.handleRequest(validRawBody, headers, validIp1);
+		await webhookHandler.handleRequest(request, validIp1);
 		assert.fail("Expected error was not thrown");
 	} catch (error) {
 		if (!(error instanceof Error)) throw error;
@@ -68,9 +76,13 @@ test("should throw an error for invalid signature", async () => {
 	webhookHandler.verifySignature = async () => false;
 	const headers = new Headers();
 	headers.set("X-Signature", "invalidsignature");
-
+	const request = new Request("https://example.com/webhook", {
+		method: "POST",
+		headers,
+		body: validRawBody,
+	});
 	try {
-		await webhookHandler.handleRequest(validRawBody, headers, validIp1);
+		await webhookHandler.handleRequest(request, validIp1);
 		assert.fail("Expected error was not thrown");
 	} catch (error) {
 		if (!(error instanceof Error)) throw error;
