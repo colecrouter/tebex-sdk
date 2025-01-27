@@ -7,7 +7,7 @@ Browser friendly, no NodeJS packages, no dependencies.
 ## Installation
 
 ```sh
-npm install tebex-sdk
+npm install tebex-sdk-js
 ```
 
 ## Features
